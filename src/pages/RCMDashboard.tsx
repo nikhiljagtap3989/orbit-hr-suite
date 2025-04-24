@@ -2,7 +2,7 @@
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { CalendarPlus, ShieldCheck, Coins, FileText, Code, FilePen, Search, Send, Receipt, X, Mail, FileInvoice } from "lucide-react";
+import { CalendarPlus, ShieldCheck, Coins, FileText, Code, FilePen, Search, Send, Receipt, X, Mail, FileText as FileInvoice } from "lucide-react";
 
 const rcmSteps = [
   {
