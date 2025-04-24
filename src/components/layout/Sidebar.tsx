@@ -1,4 +1,3 @@
-
 import {
   Sidebar as SidebarComponent,
   SidebarContent,
@@ -10,51 +9,56 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { NavLink } from "react-router-dom";
-import { Users, FileText, Briefcase, Calendar, Clock } from "lucide-react";
+import { CalendarPlus, ShieldCheck, Coins, FileText, Code, FilePen, Search, Send, Receipt, X, Mail, BarChart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const menuItems = [
   {
-    label: "Dashboard",
+    label: "RCM Dashboard",
     path: "/",
-    icon: Users,
+    icon: BarChart,
   },
   {
-    label: "Employees",
-    path: "/employees",
-    icon: Users,
+    label: "Patient Scheduling",
+    path: "/patient-scheduling",
+    icon: CalendarPlus,
   },
   {
-    label: "Onboarding",
-    path: "/onboarding",
-    icon: Briefcase,
+    label: "Insurance Verification",
+    path: "/insurance-verification",
+    icon: ShieldCheck,
   },
   {
-    label: "Attendance",
-    path: "/attendance",
-    icon: Clock,
+    label: "Co-Pay Collection",
+    path: "/copay-collection",
+    icon: Coins,
   },
   {
-    label: "Leave",
-    path: "/leave",
-    icon: Calendar,
-  },
-  {
-    label: "Documents",
-    path: "/documents",
+    label: "Visit Documentation",
+    path: "/visit-documentation",
     icon: FileText,
   },
+  {
+    label: "Medical Coding",
+    path: "/medical-coding",
+    icon: Code,
+  },
+  {
+    label: "Charge Entry",
+    path: "/charge-entry",
+    icon: FilePen,
+  }
 ];
 
 const Sidebar = () => {
   return (
     <SidebarComponent>
       <div className="flex h-16 items-center border-b border-sidebar-border px-6">
-        <h2 className="text-xl font-bold text-primary-foreground">Orbit HR</h2>
+        <h2 className="text-xl font-bold text-primary-foreground">Healthcare RCM</h2>
       </div>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
+          <SidebarGroupLabel>RCM Workflow</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -86,7 +90,7 @@ const Sidebar = () => {
             Need Help?
           </h3>
           <p className="text-xs text-sidebar-foreground mt-1">
-            Check our documentation for guides and support
+            Contact our support team for RCM assistance
           </p>
           <button className="mt-2 text-xs font-medium underline text-sidebar-accent-foreground">
             View Documentation
