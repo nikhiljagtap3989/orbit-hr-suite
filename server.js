@@ -10,14 +10,17 @@ dotenv.config();
 // Create Express app
 const app = express();
 
-// Database connection
-const pool = new Pool({
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME
-});
+// Database connection configuration
+const dbConfig = {
+  user: process.env.DB_USER || 'your_postgres_username',
+  password: process.env.DB_PASSWORD || 'your_postgres_password',
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 5432,
+  database: process.env.DB_NAME || 'rcm_healthcare'
+};
+
+// Create database pool
+const pool = new Pool(dbConfig);
 
 // Middleware
 app.use(cors());
@@ -65,10 +68,12 @@ app.use((req, res) => {
 });
 
 // Server configuration
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Environment: ${NODE_ENV}`);
 });
 
 // Graceful shutdown
@@ -84,3 +89,4 @@ process.on('SIGTERM', () => {
 });
 
 module.exports = { app, pool };
+
