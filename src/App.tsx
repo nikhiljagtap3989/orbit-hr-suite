@@ -9,6 +9,8 @@ import RCMDashboard from "./pages/RCMDashboard";
 import PatientScheduling from "./pages/rcm/PatientScheduling";
 import InsuranceVerification from "./pages/rcm/InsuranceVerification";
 import NotFound from "./pages/NotFound";
+import ClaimSubmission from "./pages/rcm/ClaimSubmission";
+import InsuranceVerificationn from "./pages/rcm/InsuranceVerificationn";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,22 @@ const App = () => (
             element={
               <MainLayout>
                 <InsuranceVerification />
+              </MainLayout>
+            } 
+          />
+          <Route 
+            path="/ClaimSubmission" 
+            element={
+              <MainLayout>
+                <ClaimSubmission />
+              </MainLayout>
+            } 
+          />
+          <Route 
+            path="/Insurance" 
+            element={
+              <MainLayout>
+                <InsuranceVerificationn />
               </MainLayout>
             } 
           />

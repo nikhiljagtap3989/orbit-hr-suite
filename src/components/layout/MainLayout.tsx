@@ -22,7 +22,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
           </div>
         </div>
         <footer className="bg-muted py-4 px-6 text-sm text-center border-t">
-          <p>© {new Date().getFullYear()} Healthcare RCM System - Streamlining Revenue Cycle Management</p>
+          <p>© {new Date().getFullYear()} Healthcare RCM System - ValueDX Technologies</p>
         </footer>
       </div>
     </SidebarProvider>

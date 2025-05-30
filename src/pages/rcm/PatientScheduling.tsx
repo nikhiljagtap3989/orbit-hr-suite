@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CalendarPlus } from "lucide-react";
 import RCMStepLayout from "@/components/rcm/RCMStepLayout";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -9,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent } from "@/components/ui/card";
+import dayjs from "dayjs";
 
 const patientFormSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -24,6 +24,8 @@ const patientFormSchema = z.object({
 type PatientFormData = z.infer<typeof patientFormSchema>;
 
 const PatientScheduling = () => {
+  const [appointments, setAppointments] = useState<any[]>([]);
+
   const form = useForm<PatientFormData>({
     resolver: zodResolver(patientFormSchema),
     defaultValues: {
@@ -38,11 +40,49 @@ const PatientScheduling = () => {
     },
   });
 
-  const onSubmit = (data: PatientFormData) => {
-    console.log("Patient scheduling data:", data);
-    // In a real app, this would be sent to your backend
-    alert("Appointment scheduled successfully!");
-    form.reset();
+  const fetchAppointments = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/appointments");
+      const data = await response.json();
+
+      const today = dayjs().format("YYYY-MM-DD");
+      const filtered = data.filter((appt: any) =>
+        dayjs(appt.appointment_date).format("YYYY-MM-DD") === today
+      );
+
+      setAppointments(filtered);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
+
+  const onSubmit = async (data: PatientFormData) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/schedule-appointment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("Appointment scheduled successfully!");
+        form.reset();
+        fetchAppointments(); // Refresh list
+      } else {
+        alert("Failed to schedule appointment: " + result.message);
+      }
+    } catch (error) {
+      console.error("Error scheduling appointment:", error);
+      alert("Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -54,125 +94,118 @@ const PatientScheduling = () => {
       nextStep={{ name: "Insurance Verification", path: "/insurance-verification" }}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Appointment Form */}
         <div>
           <h2 className="text-xl font-semibold mb-4">Schedule New Appointment</h2>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* First Name */}
                 <FormField
                   control={form.control}
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>First Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="John" {...field} />
-                      </FormControl>
+                      <FormControl><Input placeholder="John" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                {/* Last Name */}
                 <FormField
                   control={form.control}
                   name="lastName"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Last Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Doe" {...field} />
-                      </FormControl>
+                      <FormControl><Input placeholder="Doe" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-              
+
+              {/* DOB */}
               <FormField
                 control={form.control}
                 name="dateOfBirth"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Date of Birth</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
+                    <FormControl><Input type="date" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-                  
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Email */}
                 <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input type="email" placeholder="john.doe@example.com" {...field} />
-                      </FormControl>
+                      <FormControl><Input type="email" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                {/* Phone */}
                 <FormField
                   control={form.control}
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Phone Number</FormLabel>
-                      <FormControl>
-                        <Input placeholder="(123) 456-7890" {...field} />
-                      </FormControl>
+                      <FormControl><Input placeholder="(123) 456-7890" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Appointment Date */}
                 <FormField
                   control={form.control}
                   name="appointmentDate"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Appointment Date</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
+                      <FormControl><Input type="date" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                {/* Appointment Time */}
                 <FormField
                   control={form.control}
                   name="appointmentTime"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Appointment Time</FormLabel>
-                      <FormControl>
-                        <Input type="time" {...field} />
-                      </FormControl>
+                      <FormControl><Input type="time" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-              
+
+              {/* Reason for Visit */}
               <FormField
                 control={form.control}
                 name="reasonForVisit"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Reason for Visit</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Annual checkup" {...field} />
-                    </FormControl>
+                    <FormControl><Input placeholder="Annual checkup" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <div className="flex justify-end">
                 <Button type="submit">Schedule Appointment</Button>
               </div>
@@ -180,29 +213,34 @@ const PatientScheduling = () => {
           </Form>
         </div>
 
+        {/* Today’s Appointments */}
         <div>
           <h2 className="text-xl font-semibold mb-4">Today's Appointments</h2>
           <div className="space-y-3">
-            {[
-              { time: "9:00 AM", name: "Sarah Johnson", reason: "Annual physical" },
-              { time: "10:30 AM", name: "Michael Smith", reason: "Follow-up" },
-              { time: "1:15 PM", name: "Emily Davis", reason: "New patient consultation" },
-              { time: "2:45 PM", name: "Robert Wilson", reason: "Lab results review" },
-              { time: "4:00 PM", name: "Jennifer Brown", reason: "Medication refill" },
-            ].map((appointment, index) => (
-              <Card key={index}>
-                <CardContent className="p-4 flex justify-between items-center">
-                  <div>
-                    <p className="font-medium">{appointment.name}</p>
-                    <p className="text-sm text-muted-foreground">{appointment.reason}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium">{appointment.time}</p>
-                    <Button variant="ghost" size="sm">Details</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            {appointments.length === 0 ? (
+              <p className="text-muted-foreground">No appointments for today.</p>
+            ) : (
+              appointments.map((appointment, index) => (
+                <Card key={index}>
+                  <CardContent className="p-4 flex justify-between items-center">
+                    <div>
+                      <p className="font-medium">
+                        {appointment.first_name} {appointment.last_name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {appointment.reason_for_visit}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium">
+                        {dayjs(`1970-01-01T${appointment.appointment_time}`).format("hh:mm A")}
+                      </p>
+                      <Button variant="ghost" size="sm">Details</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </div>
       </div>

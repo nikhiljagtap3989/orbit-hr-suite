@@ -24,7 +24,7 @@ const rcmSteps = [
   {
     id: 3,
     name: "Patient Co-Pay Collection",
-    path: "/copay-collection",
+    path: "/Insurance",
     description: "Collect patient co-pays and manage patient payments",
     icon: Coins,
     color: "bg-blue-100 text-blue-700 border-blue-200"
@@ -64,7 +64,7 @@ const rcmSteps = [
   {
     id: 8,
     name: "Claims Submission",
-    path: "/claims-submission",
+    path: "/ClaimSubmission",
     description: "Submit claims to insurance providers",
     icon: Send,
     color: "bg-rose-100 text-rose-700 border-rose-200"
